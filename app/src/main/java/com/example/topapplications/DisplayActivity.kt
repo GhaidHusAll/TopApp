@@ -1,6 +1,7 @@
 package com.example.topapplications
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.topapplications.databinding.ActivityDisplayBinding
@@ -20,6 +21,13 @@ class DisplayActivity : AppCompatActivity() {
             val toMain = Intent(this,MainActivity::class.java)
             startActivity(toMain)
         }
+        binding.btnGo.setOnClickListener {
+            val myWebLink = Intent(Intent.ACTION_VIEW)
+            myWebLink.data = Uri.parse(intent.getStringExtra("appLink"))
+            startActivity(myWebLink)
+        }
     }
+
+
 
 }

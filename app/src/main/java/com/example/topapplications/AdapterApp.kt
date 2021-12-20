@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.topapplications.databinding.RowBinding
 import com.squareup.picasso.Picasso
 
-class AdapterApp(private val list: ArrayList<Application>, val activity: Activity):RecyclerView.Adapter<AdapterApp.HolderApp>() {
+class AdapterApp(private var list: ArrayList<Application>, private val activity: Activity):RecyclerView.Adapter<AdapterApp.HolderApp>() {
     class HolderApp(val Binding: RowBinding):RecyclerView.ViewHolder(Binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolderApp {
@@ -26,4 +26,9 @@ class AdapterApp(private val list: ArrayList<Application>, val activity: Activit
     }
 
     override fun getItemCount() = list.size
+
+    fun updateList( newList: ArrayList<Application>){
+        this.list = newList
+        notifyDataSetChanged()
+    }
 }

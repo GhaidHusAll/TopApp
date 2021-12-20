@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
-        requestAPI(true)
+        getApp(true)
         appList = arrayListOf()
         myAdapter = AdapterApp(appList,this)
         binding.rvMain.adapter = myAdapter
@@ -40,33 +40,33 @@ class MainActivity : AppCompatActivity() {
         binding.btnGet10.setOnClickListener {
             binding.btnGet10.setTextColor(Color.parseColor("#6DE41515"))
             binding.btnGet100.setTextColor(Color.parseColor("#FF000000"))
-            requestAPI(true)
+            getApp(true)
         }
         binding.btnGet100.setOnClickListener {
             binding.btnGet100.setTextColor(Color.parseColor("#6DE41515"))
             binding.btnGet10.setTextColor(Color.parseColor("#FF000000"))
-            requestAPI(false)
+            getApp(false)
         }
 
     }
 
-    private fun requestAPI(isTen: Boolean){
-        CoroutineScope(IO).launch {
-            val data = async { getApp(isTen) }.await()
-            if(data.isNotEmpty()) {
-                try {
-                Log.d("MAIN", "$data")
-                myAdapter.notifyDataSetChanged()
-            }catch (e: Exception){
-            Log.e("TAG", "try-catch: Unable : " + e)
-        }
-            }else{
-                Log.d("MAIN", "Unable to get data")
-            }
-        }
-    }
+//    private fun requestAPI(isTen: Boolean){
+//        CoroutineScope(IO).launch {
+//            val data = async { getApp(isTen) }.await()
+//            if(data.isNotEmpty()) {
+//                try {
+//                Log.d("MAIN", "$data")
+//                myAdapter.notifyDataSetChanged()
+//            }catch (e: Exception){
+//            Log.e("TAG", "try-catch: Unable : " + e)
+//        }
+//            }else{
+//                Log.d("MAIN", "Unable to get data")
+//            }
+//        }
+//    }
 
-    private fun getApp(isTen:Boolean): List<Application>{
+    private fun getApp(isTen:Boolean){
         val retrofitVar = Retrofit.Builder()
             .baseUrl("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topfreeapplications/").
             addConverterFactory(SimpleXmlConverterFactory.create())
@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
                     val apps = response.body()!!.entrys!!
                 appList.clear()
                 for (app in apps) {
-                        appList.add(Application( app.name!!,  app.summary!!,app.image!![2].url!!))
-                    }
+                        appList.add(Application( app.name!!,  app.summary!!,app.image!![2].url!!,app.link!!))
+                }
                 myAdapter.notifyDataSetChanged()
             }
 
@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "An Error Occurred", Toast.LENGTH_SHORT).show()
             }
         })
-        return appList
     }
 
      fun toDisplay(app:Application){
@@ -103,7 +102,9 @@ class MainActivity : AppCompatActivity() {
         toDisplayActivity.putExtra("appName",app.name)
         toDisplayActivity.putExtra("appSummary",app.summary)
         toDisplayActivity.putExtra("appLogo",app.url)
-        startActivity(toDisplayActivity)
+         toDisplayActivity.putExtra("appLink",app.webLink)
+
+         startActivity(toDisplayActivity)
 
     }
 }

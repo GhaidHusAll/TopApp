@@ -14,6 +14,11 @@ class Entry @JvmOverloads constructor(
     @param:Element(name = "name")
     var name: String? = null,
 
+    @field:Element(name = "id")
+    @param:Element(name = "id")
+    var link: String? = null,
+
+
     @field:ElementList(name = "image" , inline = true)
     var image: List<Image>? = null
 
